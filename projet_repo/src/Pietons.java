@@ -1,35 +1,32 @@
-public class Pietons {
-    private boolean enMovementP;
-    private double axeXP;
-    private double axeYP;
+public class Pietons implements Runnable {
+    double axeXP;
+    double axeYP;
+    private Feu trafficLight;
+    private int waitTime;
 
-    public Pietons(boolean enMovementP, double axeXP, double axeYP) {
-        this.enMovementP = enMovementP;
+    public Pietons(double axeXP, double axeYP, Feu trafficLight) {
         this.axeXP = axeXP;
         this.axeYP = axeYP;
+        this.trafficLight = trafficLight;
+        this.waitTime = 0;
     }
 
-    public Pietons(){
-        this.enMovementP=enMovementP;
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                if (trafficLight.getCouleur().equals("Rouge")) {  // pieton passe au rouge
+                    axeYP -= 2;
+                    if (axeYP < -50) {
+                        axeYP = 600;  // si le pieton quitte l'ecran, revient au debut
+                    }
+                }
 
-    }
-
-    public boolean isEnMovementP() {
-        return enMovementP;
-    }
-
-    public double getAxeXP() {
-        return axeXP;
-    }
-
-    public double getAxeYP() {
-        return axeYP;
-    }
-
-    public boolean testerMovement(Feu feu){
-        if (feu.getCouleur().equals("rouge"))
-            return this.enMovementP=true;
-        else
-            return this.enMovementP= false;
+                // pieton attendent au vert
+                Thread.sleep(16);  // 60 FPS
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,104 +1,93 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class SimulationPanel extends JPanel {
-    private Vehicules vehicle;
-    private Pietons pedestrian;
+    private List<Vehicules> vehicles;
+    private List<Pietons> pedestrians;
     private Feu trafficLight;
     private ExecutorService executorService;
-    private Timer timer; // Timer puor update simulation
 
-    public <timer> SimulationPanel() {
-        // Initialize the objects
+    public SimulationPanel() {
+        // Nesneleri başlat
         trafficLight = new Feu();
-        trafficLight.changerCouleur("Vert"); // initial color est vert
+        vehicles = new ArrayList<>();
+        pedestrians = new ArrayList<>();
 
-        vehicle = new Vehicules(true, 700, 150); // creer vehicule
-        pedestrian = new Pietons(true, 200, 250); // creer pieton
+        // Araçları ekle (Araçlar y ekseninde yaya geçidinin altında olacak)
+        for (int i = 0; i < 5; i++) {
+            vehicles.add(new Vehicules(-100 * i, getHeight() / 2 + 50, trafficLight));  // Araçlar y ekseninde alt kısımda hareket eder
+        }
 
+        // Yayaları ekle (Yayalar y ekseninde yukarıda ve yaya geçidinden geçecek şekilde ayarlandı)
+        for (int i = 0; i < 3; i++) {
+            pedestrians.add(new Pietons(getWidth() / 2 + 100, getHeight() / 2 - 100 - i * 50, trafficLight));  // Yayalar yukarıda olacak şekilde konumlandırıldı
+        }
 
-        executorService = Executors.newCachedThreadPool(); //
-        startVehicleThread(); //
-        //timer update; chaque 16 ms (10 FPS);
-        timer = new Timer(16, e -> updateSimulation());
+        // Thread havuzunu başlat
+        executorService = Executors.newCachedThreadPool();
+        startSimulation();
     }
-
-    public void startVehicleThread() {
-        executorService.submit(() -> {
-            while (true) {
-                try {
-                    //
-                    Thread.sleep(16);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                // Araba hareketi
-                vehicle.axeXV -= 2;
-                if (vehicle.axeXV < -50) { // Araba ekran dışına çıkarsa başa döndür
-                    vehicle.axeXV = 800;
-                }
-
-                // Yeniden çizim Swing bileşenini ana thread (EDT) üzerinde çalıştırmalıyız
-                SwingUtilities.invokeLater(this::repaint);
-            }
-        });
-    }
-
-
 
     public void startSimulation() {
-        timer.start(); // starter times
+        // Trafik ışığı thread'ini başlat
+        executorService.submit(trafficLight);
+
+        // Araç ve yaya thread'lerini başlat
+        for (Vehicules vehicle : vehicles) {
+            executorService.submit(vehicle);
+        }
+
+        for (Pietons pedestrian : pedestrians) {
+            executorService.submit(pedestrian);
+        }
+
+        // Simülasyonu sürekli yeniden çiz
+        Timer repaintTimer = new Timer(16, e -> repaint());
+        repaintTimer.start();
     }
-
-    private void updateSimulation() {
-        //update vehicule et pieton sur logique de sirqulation
-      /*
-        boolean vehicleMoving = vehicle.verifierArret(pedestrian, 100, 180); // check si il doit vehicule stop
-        boolean pedestrianMoving = pedestrian.testerMovement(trafficLight); // check si il doit pieton se depalcer
-
-        if (vehicleMoving) {
-            // deplacer vers la gauche
-            vehicle.axeXV -= 2;
-        }
-
-        if (pedestrianMoving) {
-            // deplacer pieton vers la haut
-            pedestrian = new Pietons(true, pedestrian.getAxeXP(), pedestrian.getAxeYP() - 2);
-        }
-
-       */
-
-        vehicle.axeXV -=2;
-
-
-        if (vehicle.axeXV < -50) {
-            vehicle.axeXV = 800;
-        }
-
-        // redesiner
-        repaint();
-    }
-
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Draw the traffic light
-        g.setColor(trafficLight.getCouleur().equals("Vert") ? Color.GREEN : Color.RED);
-        g.fillRect(50, 50, 20, 60); // desiner feu
+        // Eksenleri çiz
+        drawAxes(g);
 
-        // Draw the vehicle
+        // Trafik ışığını (0,0) noktasına yerleştir
+        g.setColor(trafficLight.getCouleur().equals("Vert") ? Color.GREEN : trafficLight.getCouleur().equals("Sarı") ? Color.YELLOW : Color.RED);
+        g.fillRect(getWidth() / 2 - 10, getHeight() / 2 - 60, 20, 60);  // Trafik ışığı boyutu ve pozisyonu
+
+        // Araçları çiz (y ekseninde daha aşağıda olacaklar)
         g.setColor(Color.BLUE);
-        g.fillRect((int) vehicle.axeXV, (int) vehicle.axeYV, 50, 30); // desiner vehicule
+        for (Vehicules vehicle : vehicles) {
+            g.fillRect((int) vehicle.axeXV, getHeight() / 2 + 100, 50, 30);  // Araçlar yaya geçidinden daha aşağıda olacak
+        }
 
-        // Draw the pedestrian
+        // Yayaları çiz (yaya geçidinin üstünde yukarıdan aşağıya doğru hareket ederler)
         g.setColor(Color.ORANGE);
-        g.fillOval((int) pedestrian.getAxeXP(), (int) pedestrian.getAxeYP(), 20, 20); // desiner pieton
+        for (Pietons pedestrian : pedestrians) {
+            g.fillOval((int) pedestrian.axeXP, (int) pedestrian.axeYP, 20, 20);  // Yayalar yukarıda yaya geçidinde olacak
+        }
+
+        // Yaya geçidini (100, 0) noktasına yerleştir
+        g.setColor(Color.WHITE);
+        for (int i = 0; i < 5; i++) {
+            g.fillRect(getWidth() / 2 + 100, getHeight() / 2 + i * 30, 150, 5);  // Yaya geçidi çizgileri
+        }
+    }
+
+    // X ve Y eksenlerini çiz
+    private void drawAxes(Graphics g) {
+        g.setColor(Color.GRAY);  // Eksen çizgileri gri renk olacak
+
+        // X eksenini çiz (Yatay çizgi)
+        g.drawLine(0, getHeight() / 2, getWidth(), getHeight() / 2);
+
+        // Y eksenini çiz (Dikey çizgi)
+        g.drawLine(getWidth() / 2, 0, getWidth() / 2, getHeight());
     }
 }
-
-
