@@ -12,31 +12,31 @@ public class SimulationPanel extends JPanel {
     private ExecutorService executorService;
 
     public SimulationPanel() {
-        // Nesneleri başlat
+        // demarer les objet
         trafficLight = new Feu();
         vehicles = new ArrayList<>();
         pedestrians = new ArrayList<>();
 
-        // Araçları ekle (Araçlar y ekseninde yaya geçidinin altında olacak)
+        // ajouter vehicule
         for (int i = 0; i < 5; i++) {
-            vehicles.add(new Vehicules(-100 * i, getHeight() / 2 + 50, trafficLight));  // Araçlar y ekseninde alt kısımda hareket eder
+            vehicles.add(new Vehicules(-100 * i, getHeight() / 2 + 50, trafficLight));  // sens X
         }
 
-        // Yayaları ekle (Yayalar y ekseninde yukarıda ve yaya geçidinden geçecek şekilde ayarlandı)
+        // ajouter pieton
         for (int i = 0; i < 3; i++) {
-            pedestrians.add(new Pietons(getWidth() / 2 + 100, getHeight() / 2 - 100 - i * 50, trafficLight));  // Yayalar yukarıda olacak şekilde konumlandırıldı
+            pedestrians.add(new Pietons(getWidth() / 2 + 100, getHeight() / 2 - 100 - i * 50, trafficLight));  // sens Y
         }
 
-        // Thread havuzunu başlat
+        // demarer Thread
         executorService = Executors.newCachedThreadPool();
         startSimulation();
     }
 
     public void startSimulation() {
-        // Trafik ışığı thread'ini başlat
+        // demarer thread feu
         executorService.submit(trafficLight);
 
-        // Araç ve yaya thread'lerini başlat
+        // demarer thread vehicule et pieton
         for (Vehicules vehicle : vehicles) {
             executorService.submit(vehicle);
         }
@@ -45,7 +45,7 @@ public class SimulationPanel extends JPanel {
             executorService.submit(pedestrian);
         }
 
-        // Simülasyonu sürekli yeniden çiz
+        // redessiner graphique
         Timer repaintTimer = new Timer(16, e -> repaint());
         repaintTimer.start();
     }
@@ -54,40 +54,40 @@ public class SimulationPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Eksenleri çiz
+        // dessiner les axes
         drawAxes(g);
 
-        // Trafik ışığını (0,0) noktasına yerleştir
-        g.setColor(trafficLight.getCouleur().equals("Vert") ? Color.GREEN : trafficLight.getCouleur().equals("Sarı") ? Color.YELLOW : Color.RED);
+        // dessiner feu au (0,0)
+        g.setColor(trafficLight.getCouleur().equals("Vert") ? Color.GREEN : trafficLight.getCouleur().equals("Jaune") ? Color.YELLOW : Color.RED);
         g.fillRect(getWidth() / 2 - 10, getHeight() / 2 - 60, 20, 60);  // Trafik ışığı boyutu ve pozisyonu
 
-        // Araçları çiz (y ekseninde daha aşağıda olacaklar)
+        // dessiner vehicules
         g.setColor(Color.BLUE);
         for (Vehicules vehicle : vehicles) {
             g.fillRect((int) vehicle.axeXV, getHeight() / 2 + 100, 50, 30);  // Araçlar yaya geçidinden daha aşağıda olacak
         }
 
-        // Yayaları çiz (yaya geçidinin üstünde yukarıdan aşağıya doğru hareket ederler)
+        // dessiner les pietons
         g.setColor(Color.ORANGE);
         for (Pietons pedestrian : pedestrians) {
             g.fillOval((int) pedestrian.axeXP, (int) pedestrian.axeYP, 20, 20);  // Yayalar yukarıda yaya geçidinde olacak
         }
 
-        // Yaya geçidini (100, 0) noktasına yerleştir
+        // dessiner passage
         g.setColor(Color.WHITE);
         for (int i = 0; i < 5; i++) {
             g.fillRect(getWidth() / 2 + 100, getHeight() / 2 + i * 30, 150, 5);  // Yaya geçidi çizgileri
         }
     }
 
-    // X ve Y eksenlerini çiz
+    // dessiner axess virtuel
     private void drawAxes(Graphics g) {
-        g.setColor(Color.GRAY);  // Eksen çizgileri gri renk olacak
+        g.setColor(Color.GRAY);  //
 
-        // X eksenini çiz (Yatay çizgi)
+        // X
         g.drawLine(0, getHeight() / 2, getWidth(), getHeight() / 2);
 
-        // Y eksenini çiz (Dikey çizgi)
+        // Y
         g.drawLine(getWidth() / 2, 0, getWidth() / 2, getHeight());
     }
 }
