@@ -2,7 +2,7 @@ import javax.swing.JFrame;
 
 public class Main {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Simulation de trafic");
+        JFrame frame = new JFrame("Trafik Simülasyonu");
         SimulationPanel simulationPanel = new SimulationPanel();
         frame.add(simulationPanel);
         frame.setSize(800, 600);
