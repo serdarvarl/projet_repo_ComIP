@@ -16,7 +16,7 @@ public class SimulationPanel extends JPanel {
     public SimulationPanel() {
         // lydia : lire le paln a partir du fichier Csv
         try {
-            plan = new Plan ("plan.csv");//le chemain lydia
+            plan = new Plan ("plan.csv");//le chemain // lydia
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -262,7 +262,7 @@ public class SimulationPanel extends JPanel {
         for (Vehicules vehicle : vehicles) {
             int roadYPosition = getHeight() / 2;  // position millieu de route
             if (trafficLight.getCouleur().equals("Rouge") && vehicle.axeXV < (getWidth() / 2 + 100)) {
-                // Araçlar yaya geçidine gelmeden önce durur
+                //
                 g.fillRect((int) vehicle.axeXV, roadYPosition - 20, 60, 40);  // stop
             } else {
                 // demarer

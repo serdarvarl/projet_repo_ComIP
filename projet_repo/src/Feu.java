@@ -17,17 +17,17 @@ public class Feu implements Runnable {
     public void run() {
         while (true) {
             try {
-                // Yeşil ışık
+                // vert
                 if (couleur.equals("Vert")) {
                     Thread.sleep(5000);  // 5 seconde
                     changerCouleur("Jaune");
                 }
-                // Sarı ışık
+                // jaune
                 else if (couleur.equals("Jaune")) {
                     Thread.sleep(2000);  // 2 seconde
                     changerCouleur("Rouge");
                 }
-                // Kırmızı ışık
+                // rouge
                 else if (couleur.equals("Rouge")) {
                     Thread.sleep(5000);  // 5 seconde
                     changerCouleur("Vert");
