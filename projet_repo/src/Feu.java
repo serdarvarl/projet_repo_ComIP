@@ -19,17 +19,17 @@ public class Feu implements Runnable {
             try {
                 // vert
                 if (couleur.equals("Vert")) {
-                    Thread.sleep(5000);  // 5 seconde
+                    Thread.sleep(2000);  // 5 seconde
                     changerCouleur("Jaune");
                 }
                 // jaune
                 else if (couleur.equals("Jaune")) {
-                    Thread.sleep(2000);  // 2 seconde
+                    Thread.sleep(750);  // 2 seconde
                     changerCouleur("Rouge");
                 }
                 // rouge
                 else if (couleur.equals("Rouge")) {
-                    Thread.sleep(5000);  // 5 seconde
+                    Thread.sleep(1000);  // 5 seconde
                     changerCouleur("Vert");
                 }
             } catch (InterruptedException e) {
