@@ -2,7 +2,7 @@ public class Feu implements Runnable {
     private String couleur;
 
     public Feu() {
-        this.couleur = "Vert";  // Başlangıç rengi yeşil
+        this.couleur = "Vert";  // initial colour
     }
 
     public String getCouleur() {
@@ -17,19 +17,14 @@ public class Feu implements Runnable {
     public void run() {
         while (true) {
             try {
-                // vert
                 if (couleur.equals("Vert")) {
-                    Thread.sleep(2000);  // 5 seconde
+                    Thread.sleep(5000);  // 5 second vert
                     changerCouleur("Jaune");
-                }
-                // jaune
-                else if (couleur.equals("Jaune")) {
-                    Thread.sleep(750);  // 2 seconde
+                } else if (couleur.equals("Jaune")) {
+                    Thread.sleep(1000);  // 1 second jaune
                     changerCouleur("Rouge");
-                }
-                // rouge
-                else if (couleur.equals("Rouge")) {
-                    Thread.sleep(1000);  // 5 seconde
+                } else if (couleur.equals("Rouge")) {
+                    Thread.sleep(3000);  // 3 second rouge
                     changerCouleur("Vert");
                 }
             } catch (InterruptedException e) {
