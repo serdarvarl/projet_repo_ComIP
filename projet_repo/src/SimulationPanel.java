@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.swing.ImageIcon;
+import java.awt.Image;
 
 public class SimulationPanel extends JPanel {
     private List<Vehicules> vehicles;
@@ -15,6 +17,9 @@ public class SimulationPanel extends JPanel {
     private boolean collisionOccurred = false; // drapeau de situation d'accident
     private long collisionTime; // time accident
     private int collisionCounter = 0;
+    private int collisionX=-1; // Coordonnées de la collision
+    private int collisionY=-1; // Coordonnées de la collision
+    Image crossImage = new ImageIcon("cross.png").getImage();
 
     public SimulationPanel() {
         // CVS plan
@@ -63,14 +68,28 @@ public class SimulationPanel extends JPanel {
     }
 
     // Mettre à jour le statut de l'accident
-    public void setCollisionOccurred(boolean collisionOccurred) {
-        if (collisionOccurred && !this.collisionOccurred) { // increase counter pour chauque accident
+    public void setCollisionOccurred(boolean collisionOccurred, int collisionX, int collisionY) {
+        if (collisionOccurred && !this.collisionOccurred) { // increase counter pour chaque accident
             collisionCounter++;
-            System.out.println("Accident:" + collisionCounter); // afficher sur terminal total accident
+            System.out.println("Accident: " + collisionCounter); // afficher sur terminal total accident
+            System.out.println("Accident #" + collisionCounter + "position (" + collisionX + ", " + collisionY + ")"); // afficher sur terminal total accident et position
+            System.out.println("Collision Occurred: " + collisionOccurred + " at (" + collisionX + ", " + collisionY + ")");
+
         }
         this.collisionOccurred = collisionOccurred;
-        this.collisionTime = System.currentTimeMillis(); // enregistrer le temps de l'accident
+        this.collisionTime = System.currentTimeMillis(); // Temps de l'accident
+        this.collisionX = collisionX; // Mettre à jour la position de l'accident
+        this.collisionY = collisionY;
     }
+
+    public int getCollisionX(){
+        return collisionX;
+    }
+
+    public int getCollisionY(){
+        return collisionY;
+    }
+
 
     // Vérifier si le statut de l'accident est actif
     public boolean isCollisionActive() {
@@ -108,6 +127,14 @@ public class SimulationPanel extends JPanel {
                 }
             }
         }
+//crois dessiner
+        if (collisionOccurred && collisionX >= 0 && collisionY >= 0) {
+            g.setColor(Color.RED);  //
+            drawCross(g, collisionX, collisionY);
+        }
+
+
+
 
         // Dessiner la grille de coordonnées
         g.setColor(Color.BLUE);
@@ -142,21 +169,36 @@ public class SimulationPanel extends JPanel {
             g.fillOval(crosswalkXPosition, (int) pedestrian.getAxeYP(), 20, 20);
 
             // Dessiner un signe de croix en cas d'accident
+            /*
             if (pedestrian.isCollided()) {
                 g.setColor(Color.RED);  // Couleur rouge pour la croix
                 drawCross(g, (int) pedestrian.getAxeXP(), (int) pedestrian.getAxeYP());
             }
+
+             */
         }
 
         // Afficher le compteur de collisions en haut à gauche
-        g.setColor(Color.RED);
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Total accidents: " + collisionCounter, 10, 30);
     }
 
-    // Dessine un signe de croix
-    private void drawCross(Graphics g, int x, int y) {
-        int size = 30;  // Taille de la croix
-        g.drawLine(x - size, y - size, x + size, y + size);
-        g.drawLine(x - size, y + size, x + size, y - size);
+
+
+
+
+
+    private void drawCross(Graphics g, int collisionX, int collisionY) {
+        int imageSize = 30; // Resmin boyutunu ayarlayın
+
+        // crossImage adlı resmi kaza pozisyonuna (collisionX, collisionY) çiziyoruz
+        if (collisionOccurred && this.collisionX >= 0 && this.collisionY >= 0) {
+            g.drawImage(crossImage,430 , 200 , imageSize, imageSize, this);
+            System.out.println("Possiotn image: " + collisionX + ", " + collisionY);
+        }
     }
+
+
+
 }

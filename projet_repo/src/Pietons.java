@@ -62,17 +62,17 @@ public class Pietons implements Runnable {
     // accident control
     private boolean detectCollision() {
         for (Vehicules vehicle : vehicles) {
-            if (Math.abs(this.axeXP - vehicle.getAxeXV()) <= 20 && Math.abs(this.axeYP - vehicle.getAxeYV()) <=20 ) {
+            if (Math.abs(this.axeXP - vehicle.getAxeXV()) <= 20 && Math.abs(this.axeYP - vehicle.getAxeYV()) <= 20) {
                 collided = true;
-                panel.setCollisionOccurred(true); // tiregger accident
-
-                System.out.println("Collision Detected. Positon est Pieton:"+axeXP + ","+axeYP + "vehicule:"+vehicle.getAxeXV()+","+vehicle.getAxeYV());
+                panel.setCollisionOccurred(true, (int) this.axeXP, (int) this.axeYP); //position accident
                 return true;
             }
         }
         collided = false;
         return false;
     }
+
+
 
     @Override
     public void run() {
