@@ -14,6 +14,7 @@ public class SimulationPanel extends JPanel {
     private Plan plan;
     private boolean collisionOccurred = false; // drapeau de situation d'accident
     private long collisionTime; // time accident
+    private int collisionCounter = 0;
 
     public SimulationPanel() {
         // CVS plan
@@ -63,19 +64,27 @@ public class SimulationPanel extends JPanel {
 
     // Mettre à jour le statut de l'accident
     public void setCollisionOccurred(boolean collisionOccurred) {
+        if (collisionOccurred && !this.collisionOccurred) { // increase counter pour chauque accident
+            collisionCounter++;
+            System.out.println("Accident:" + collisionCounter); // afficher sur terminal total accident
+        }
         this.collisionOccurred = collisionOccurred;
-        this.collisionTime = System.currentTimeMillis(); // Enregistrer le moment de l'accident
+        this.collisionTime = System.currentTimeMillis(); // enregistrer le temps de l'accident
     }
 
     // Vérifier si le statut de l'accident est actif
     public boolean isCollisionActive() {
         // Si l'accident s'est produit il y a moins de 3 secondes, il reste actif
-        return collisionOccurred && (System.currentTimeMillis() - collisionTime < 3000);
+        if (collisionOccurred && (System.currentTimeMillis() - collisionTime >= 3000)) {
+            collisionOccurred = false;
+        }
+        return collisionOccurred;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
 
         // dessiner plan
         if (plan != null) {
@@ -100,6 +109,25 @@ public class SimulationPanel extends JPanel {
             }
         }
 
+        // Dessiner la grille de coordonnées
+        g.setColor(Color.BLUE);
+        for (int i = 0; i < getWidth(); i += 50) {
+            g.drawLine(i, 0, i, getHeight()); // Lignes verticales
+        }
+        for (int j = 0; j < getHeight(); j += 50) {
+            g.drawLine(0, j, getWidth(), j); // Lignes horizontales
+        }
+
+        // Marquer le point (0, 0)
+        g.setColor(Color.BLUE);
+        g.fillOval(0, 0, 10, 10);
+
+        // Marquer le centre
+        g.setColor(Color.GREEN);
+        g.fillOval(getWidth() / 2, getHeight() / 2, 10, 10);
+
+
+
         // dessiner vehicules
         g.setColor(Color.BLUE);
         for (Vehicules vehicle : vehicles) {
@@ -119,6 +147,10 @@ public class SimulationPanel extends JPanel {
                 drawCross(g, (int) pedestrian.getAxeXP(), (int) pedestrian.getAxeYP());
             }
         }
+
+        // Afficher le compteur de collisions en haut à gauche
+        g.setColor(Color.RED);
+        g.drawString("Total accidents: " + collisionCounter, 10, 30);
     }
 
     // Dessine un signe de croix

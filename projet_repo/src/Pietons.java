@@ -15,6 +15,7 @@ public class Pietons implements Runnable {
     private boolean collided;
     private static final double MIN_DISTANCE = 30.0;
     private SimulationPanel panel;  // pour verifier accident
+    private double collisionPont;
 
     public Pietons(double axeXP, double axeYP, Feu trafficLight, List<Vehicules> vehicles, List<Pietons> pedestrians, SimulationPanel panel) {
         this.axeXP = axeXP;
@@ -61,9 +62,11 @@ public class Pietons implements Runnable {
     // accident control
     private boolean detectCollision() {
         for (Vehicules vehicle : vehicles) {
-            if (Math.abs(this.axeXP - vehicle.getAxeXV()) < 10 && Math.abs(this.axeYP - vehicle.getAxeYV()) < 10) {
+            if (Math.abs(this.axeXP - vehicle.getAxeXV()) <= 20 && Math.abs(this.axeYP - vehicle.getAxeYV()) <=20 ) {
                 collided = true;
-                panel.setCollisionOccurred(true); // Kaza durumunu tetikler
+                panel.setCollisionOccurred(true); // tiregger accident
+
+                System.out.println("Collision Detected. Positon est Pieton:"+axeXP + ","+axeYP + "vehicule:"+vehicle.getAxeXV()+","+vehicle.getAxeYV());
                 return true;
             }
         }
@@ -90,7 +93,7 @@ public class Pietons implements Runnable {
                         // controle d'accident
                         if (detectCollision()) {
                             enMovementP = false;
-                            Thread.sleep(1000);  // Pause après l'accident
+                            Thread.sleep(3000);  // Pause après l'accident
                         }
                     } else {
                         enMovementP = false;
