@@ -1,8 +1,10 @@
 public class Feu implements Runnable {
     private String couleur;
+    private int delay; // Gecikme süresi
 
-    public Feu() {
-        this.couleur = "Vert";  // initial colour
+    public Feu(int delay, String initialColor) {
+        this.delay = delay;
+        this.couleur = initialColor;
     }
 
     public String getCouleur() {
@@ -15,21 +17,22 @@ public class Feu implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
-            try {
+        try {
+            Thread.sleep(delay); // Başlangıçta gecikme
+            while (true) {
                 if (couleur.equals("Vert")) {
-                    Thread.sleep(5000);  // 5 second vert
+                    Thread.sleep(5000);  // 5 saniye yeşil
                     changerCouleur("Jaune");
                 } else if (couleur.equals("Jaune")) {
-                    Thread.sleep(1000);  // 1 second jaune
+                    Thread.sleep(1000);  // 1 saniye sarı
                     changerCouleur("Rouge");
                 } else if (couleur.equals("Rouge")) {
-                    Thread.sleep(3000);  // 3 second rouge
+                    Thread.sleep(3000);  // 3 saniye kırmızı
                     changerCouleur("Vert");
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

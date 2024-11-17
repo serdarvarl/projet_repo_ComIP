@@ -137,7 +137,6 @@ Un piéton reste immobile tant que le feu est rouge, puis commence à se déplac
 ---
 
 
-
 ![conception](veic.png)
 
 
