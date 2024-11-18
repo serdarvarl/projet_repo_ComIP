@@ -48,6 +48,7 @@ public class Vehicules implements Runnable {
     }
 
     // contrôle de la distance entre 2 véhicules
+    //serdar
     private boolean isTooCloseToVehicleAhead() {
         for (Vehicules vehicle : vehicles) {
             if (vehicle != this && vehicle.getAxeXV() > this.axeXV && vehicle.getAxeXV() - this.axeXV < MIN_DISTANCE) {
@@ -57,38 +58,42 @@ public class Vehicules implements Runnable {
         return false;
     }
 
-    // Trafik ışığını kontrol eden metot
+    // feu control methode
+    //serdar
     public void verifierFeu() {
-        double distanceToTrafficLight1 = Math.abs(axeXV - 370);  // İlk trafik ışığı koordinatı (420,240)
-        double distanceToTrafficLight2 = Math.abs(axeXV - 350);  // İkinci trafik ışığı koordinatı (300,600)
+        double distanceToTrafficLight1 = Math.abs(axeXV - 370);  // 1er feu (420,240)
+        double distanceToTrafficLight2 = Math.abs(axeXV - 350);  // 2ieme feu (300,600)
 
-        if (distanceToTrafficLight1 <= 50) { // İlk trafik ışığına 200 piksel kala tepki ver
+
+        //// tous les agent relatione diffrent zone avec logique etc etc etc ....
+        //serdar
+        if (distanceToTrafficLight1 <= 50) { // feu 1 : La réponse est donnée à partir de 50 pixels
             if (trafficLight1.getCouleur().equals("Rouge")) {
-                this.enMovement = false; // Kırmızı ışıkta dur
+                this.enMovement = false; // S'arrête au feu rouge
             } else if (trafficLight1.getCouleur().equals("Jaune")) {
                 this.enMovement = true;
-                this.speed = 1.0; // Sarı ışıkta yavaşlama
+                this.speed = 1.0; // Ralentir au feu jaune
             } else {
                 this.enMovement = true;
-                this.speed = 2.0; // Yeşil ışıkta normal hız
+                this.speed = 2.0; // Vitesse normale au feu vert
             }
-        } else if (distanceToTrafficLight2 <= 50) { // İkinci trafik ışığına 200 piksel kala tepki ver
+        } else if (distanceToTrafficLight2 <= 50) { // Feu 2 : La réponse est donnée à partir de 50 pixels
             if (trafficLight2.getCouleur().equals("Rouge")) {
-                this.enMovement = false; // Kırmızı ışıkta dur
+                this.enMovement = false; // S'arrête au feu rouge
             } else if (trafficLight2.getCouleur().equals("Jaune")) {
                 this.enMovement = true;
-                this.speed = 1.0; // Sarı ışıkta yavaşlama
+                this.speed = 1.0; // Ralentir au feu jaune
             } else {
                 this.enMovement = true;
-                this.speed = 2.0; // Yeşil ışıkta normal hız
+                this.speed = 2.0; // Vitesse normale au feu vert
             }
         } else {
-            // Işıktan uzaktaysa normal hızda devam et
+            // Si les vehicule sont loin de la lumière, continuez à vitesse normale.
             this.enMovement = true;
             this.speed = 2.0;
         }
     }
-
+     //serdar
     @Override
     public void run() {
         try {

@@ -1,11 +1,11 @@
-// Node class represents each point on the grid for pathfinding
+// Node class represente chauqe point en grid pour pathfinding
 public class Node {
     int x;
     int y;
     double gCost;
     double hCost;
     Node parent;
-    boolean isWaypoint; // Yeni özellik: Bu düğüm bir ara nokta mı?
+    boolean isWaypoint; // c'est un point ?
 
     public Node(int x, int y) {
         this.x = x;
@@ -13,7 +13,7 @@ public class Node {
         this.gCost = 0.0;
         this.hCost = 0.0;
         this.parent = null;
-        this.isWaypoint = false; // Varsayılan olarak ara nokta değil
+        this.isWaypoint = false; // Ce n'est pas un point :/
     }
 
     public double getFCost() {

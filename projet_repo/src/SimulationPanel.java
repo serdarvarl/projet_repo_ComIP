@@ -8,6 +8,8 @@ import java.util.concurrent.Executors;
 import javax.swing.ImageIcon;
 import java.awt.Image;
 
+////serdar
+
 public class SimulationPanel extends JPanel {
     private List<Vehicules> vehicles;
     private List<Pietons> pedestrians;
@@ -37,20 +39,35 @@ public class SimulationPanel extends JPanel {
         pedestrians = new ArrayList<>();
 
         // Ajouter vehicules
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 7; i++) {
             vehicles.add(new Vehicules(-100 * i, 180, trafficLight1, trafficLight2, vehicles));
         }
 
         // Ajouter pietons - Yayalar 5 saniye aralıklarla çıkacak ve belirlenen noktalardan geçecek
         int[][] waypoints = {
-                {240, 640}, {240, 460}, {320, 360}, {460, 320}, {480, 300}, {480, 140}
+                {240, 640}, {240, 460}, {320, 360}, {460, 320}, {480, 300}, {500, 100}, {580, 60}
         };
 
-        // Ajouter pietons
-        for (int i = 0; i < 2; i++) {
-            pedestrians.add(new Pietons(220, 680 - i * 50, 600, 80, 1.0, trafficLight1, trafficLight2, vehicles, pedestrians, this));
-            pedestrians.add(new Pietons(620, 80 - i * 50, 200, 700, 1.0, trafficLight1, trafficLight2, vehicles, pedestrians, this));
+
+        // Ajouter pietons - chauque 3 seconde neww pieton
+        for (int i = 0; i < 4; i++) {
+            int finalI = i; //
+            Timer pedestrianTimer = new Timer(3000 * i, e -> {
+                Pietons pedestrian1 = new Pietons(220, 680 - finalI * 50, 620, 60, 2.0, trafficLight1, trafficLight2, vehicles, pedestrians, this);
+                Pietons pedestrian2 = new Pietons(620, 60 - finalI * 50, 220, 680, 1.0, trafficLight1, trafficLight2, vehicles, pedestrians, this);
+
+                pedestrians.add(pedestrian1);
+                pedestrians.add(pedestrian2);
+
+                executorService.submit(pedestrian1);
+                executorService.submit(pedestrian2);
+            });
+            pedestrianTimer.setRepeats(false);
+            pedestrianTimer.start();
         }
+
+
+
 
 
         // Start thread et simulation
@@ -103,25 +120,28 @@ public class SimulationPanel extends JPanel {
     // Vérifier si le statut de l'accident est actif
     public boolean isCollisionActive() {
         // Si l'accident s'est produit il y a moins de 3 secondes, il reste actif
-        if (collisionOccurred && (System.currentTimeMillis() - collisionTime >= 3000)) {
+        if (collisionOccurred && (System.currentTimeMillis() - collisionTime >= 5000)) { //BURAYI UNUTMA
             collisionOccurred = false;
         }
         return collisionOccurred;
     }
 
     // Grid'i almak için getGrid() metodu eklendi
+    /*
     public int[][] getGrid() {
         return plan != null ? plan.getGrid() : new int[0][0];
     }
 
+     */
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println("Painting component...");
+        //System.out.println("Painting component...");
 
-        System.out.println("Painting component...");
-        g.setColor(Color.RED);
-        g.drawString("Testing Paint", 50, 50);
+        //System.out.println("Painting component...");
+        //g.setColor(Color.RED);
+        //g.drawString("Testing Paint", 50, 50);
 
 
         // dessiner plan
@@ -160,16 +180,18 @@ public class SimulationPanel extends JPanel {
             drawCross(g, collisionX, collisionY);
         }
 
-        // Dessiner la grille de coordonnées
+
         /*
+        // Dessiner la grille de coordonnées
         g.setColor(Color.BLUE);
         for (int i = 0; i < getWidth(); i += 20) {
             g.drawLine(i, 0, i, getHeight()); // Lignes verticales
         }
+
         for (int j = 0; j < getHeight(); j += 20) {
             g.drawLine(0, j, getWidth(), j); // Lignes horizontales
         }
-         */
+
 
         // Marquer le point (0, 0)
         g.setColor(Color.BLUE);
@@ -179,15 +201,17 @@ public class SimulationPanel extends JPanel {
         g.setColor(Color.GREEN);
         g.fillOval(getWidth() / 2, getHeight() / 2, 10, 10);
 
+         */
+
         // dessiner vehicules
         g.setColor(Color.BLUE);
         for (Vehicules vehicle : vehicles) {
             g.fillRect((int) vehicle.getAxeXV(), (int)vehicle.getAxeYV(), 20, 20);
         }
 
-        // Yayaları çizin
+        // dessiner pieton
         for (Pietons pedestrian : pedestrians) {
-            g.setColor(pedestrian.getColor()); // Her yayanın farklı bir rengi var
+            g.setColor(pedestrian.getColor()); // random color chauque pieton
             g.fillOval((int) pedestrian.getAxeXP(), (int) pedestrian.getAxeYP(), 20, 20);
 
         }
@@ -198,15 +222,28 @@ public class SimulationPanel extends JPanel {
         g.drawString("Total accidents: " + collisionCounter, 10, 30);
 
 
+    /*
+        //dessiner les point
+        g.setColor(Color.RED);//
+        g.fillOval(240, 460, 20, 20); //
+        g.fillOval(320, 360, 20, 20); //
+        g.fillOval(460, 320, 20, 20); //
+        g.fillOval(480, 300, 20, 20); //
+        g.fillOval(500, 100, 20, 20); //
+        g.fillOval(580, 60, 20, 20);  //
+
+        g.setColor(Color.BLUE);
+        g.fillOval(620,60, 20, 20);
+        g.fillOval(220,680, 20, 20);
+     */
 
     }
 
     private void drawCross(Graphics g, int collisionX, int collisionY) {
-        int imageSize = 30; // Resmin boyutunu ayarlayın
-
-        // crossImage adlı resmi kaza pozisyonuna (collisionX, collisionY) çiziyoruz
+        int imageSize = 30; //
+        // crossImage dessiner l'image en position d'accident
         if (collisionOccurred && this.collisionX >= 0 && this.collisionY >= 0) {
-            g.drawImage(crossImage, 430, 200, imageSize, imageSize, this);
+            g.drawImage(crossImage, this.collisionX, this.collisionY, imageSize, imageSize, this);
             System.out.println("Possiotn image: " + collisionX + ", " + collisionY);
         }
     }

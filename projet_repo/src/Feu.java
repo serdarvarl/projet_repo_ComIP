@@ -21,13 +21,13 @@ public class Feu implements Runnable {
             Thread.sleep(delay); // Başlangıçta gecikme
             while (true) {
                 if (couleur.equals("Vert")) {
-                    Thread.sleep(5000);  // 5 saniye yeşil
+                    Thread.sleep(5000);  // 5 saniye vert
                     changerCouleur("Jaune");
                 } else if (couleur.equals("Jaune")) {
-                    Thread.sleep(1000);  // 1 saniye sarı
+                    Thread.sleep(1000);  // 1 saniye jaune
                     changerCouleur("Rouge");
                 } else if (couleur.equals("Rouge")) {
-                    Thread.sleep(3000);  // 3 saniye kırmızı
+                    Thread.sleep(3000);  // 3 saniye rouge
                     changerCouleur("Vert");
                 }
             }

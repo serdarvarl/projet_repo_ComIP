@@ -1,3 +1,4 @@
+//majorite par L'IA
 import java.util.*;
 
 public class AStarPathfinding {
@@ -10,7 +11,7 @@ public class AStarPathfinding {
         this.gridHeight = grid[0].length;
     }
 
-    // Başlangıç ve bitiş düğümleri arasında yolu bulma
+    // trouver plus court chemin depart entre arrive
     public List<Node> findPath(Node startNode, Node endNode) {
         List<Node> openList = new ArrayList<>();
         List<Node> closedList = new ArrayList<>();
@@ -20,7 +21,7 @@ public class AStarPathfinding {
         while (!openList.isEmpty()) {
             Node currentNode = openList.get(0);
 
-            // En düşük F maliyetine sahip düğümü bulma
+            // plus bas cost
             for (Node node : openList) {
                 if (node.getFCost() < currentNode.getFCost() ||
                         (node.getFCost() == currentNode.getFCost() && node.hCost < currentNode.hCost)) {
@@ -31,12 +32,12 @@ public class AStarPathfinding {
             openList.remove(currentNode);
             closedList.add(currentNode);
 
-            // Eğer hedef düğüme ulaşıldıysa yolu oluştur
+            // si on arrive node cible cree le chemin
             if (currentNode.x == endNode.x && currentNode.y == endNode.y) {
                 return reconstructPath(currentNode);
             }
 
-            // Komşu düğümleri elde etme
+            // node voisine
             for (Node neighbor : getNeighbors(currentNode)) {
                 if (isWalkable(neighbor) && !closedList.contains(neighbor)) {
                     double newMovementCostToNeighbor = currentNode.gCost + getDistance(currentNode, neighbor);
@@ -51,10 +52,10 @@ public class AStarPathfinding {
             }
         }
 
-        return null; // Hiçbir yol bulunamadı
+        return null; // aucune chemin
     }
 
-    // Yolu oluşturma (hedef düğümden başlayarak)
+    // cree chemin commnecer cible
     private List<Node> reconstructPath(Node endNode) {
         List<Node> path = new ArrayList<>();
         Node currentNode = endNode;
@@ -68,11 +69,11 @@ public class AStarPathfinding {
         return path;
     }
 
-    // Belirli bir düğümün komşularını elde etme
+    //
     private List<Node> getNeighbors(Node node) {
         List<Node> neighbors = new ArrayList<>();
 
-        // Dört komşuyu ekleme (yukarı, aşağı, sol, sağ)
+        // ajoter voisine node
         if (node.x - 1 >= 0) neighbors.add(new Node(node.x - 1, node.y));
         if (node.x + 1 < gridWidth) neighbors.add(new Node(node.x + 1, node.y));
         if (node.y - 1 >= 0) neighbors.add(new Node(node.x, node.y - 1));
@@ -81,16 +82,16 @@ public class AStarPathfinding {
         return neighbors;
     }
 
-    // Düğümün yürünebilir olup olmadığını kontrol etme
+    // tester node
     private boolean isWalkable(Node node) {
-        // Koordinatların ızgaranın sınırları içinde olup olmadığını kontrol edin
+        // verifie coordone dans grille
         if (node.x < 0 || node.x >= grid.length || node.y < 0 || node.y >= grid[0].length) {
             return false;
         }
         return grid[node.x][node.y] == 0; // Yürüme alanını temsil eden değer
     }
 
-    // İki düğüm arasındaki mesafeyi hesaplama (Manhattan heuristic)
+    // (Manhattan heuristic) calcule distance
     private double getDistance(Node a, Node b) {
         int distX = Math.abs(a.x - b.x);
         int distY = Math.abs(a.y - b.y);

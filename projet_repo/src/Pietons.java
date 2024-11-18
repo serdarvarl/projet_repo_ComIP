@@ -6,9 +6,9 @@ import java.util.Random;
 public class Pietons implements Runnable {
     private double axeXP;
     private double axeYP;
-    private double targetX;
-    private double targetY;
-    private double speed; // Yeni eklenen hız değişkeni
+    private double targetX; // point arrive
+    private double targetY; //point arrive
+    private double speed; // vites de pieton
     private boolean enMovementP;
     private Feu trafficLight1;
     private Feu trafficLight2;
@@ -19,14 +19,15 @@ public class Pietons implements Runnable {
     private static final double MIN_DISTANCE = 20.0;
     private SimulationPanel panel;  // pour verifier accident
 
-    // Hareket sırası kontrolü için kilit
+
     private static final Object sequentialLock = new Object();
 
-    // Ara noktalar
+    // les points drapeau
     private double[][] waypoints = {
-            {240, 640}, {240, 460}, // 7 numaralı ışığın olduğu yaya geçidi
-            {320, 360}, {460, 320}, // İki yaya geçidi arasındaki alan
-            {480, 300}, {480, 140}  // 3 numaralı ışığın olduğu yaya geçidi
+            {240, 640}, {240, 460}, //
+            {320, 360}, {460, 320}, //
+            {480, 300}, {480, 140},
+            {520, 100}, {560, 80}//
     };
     private int currentWaypointIndex = 0;
 
@@ -35,7 +36,7 @@ public class Pietons implements Runnable {
         this.axeYP = axeYP;
         this.targetX = targetX;
         this.targetY = targetY;
-        this.speed = speed; // Hız değişkenini yapıcıda başlatıyoruz
+        this.speed = speed; // speed
         this.trafficLight1 = trafficLight1;
         this.trafficLight2 = trafficLight2;
         this.vehicles = vehicles;
@@ -44,7 +45,7 @@ public class Pietons implements Runnable {
         this.enMovementP = false;
         this.collided = false;
 
-        // Rastgele renk atama
+        // color random
         Random rand = new Random();
         this.color = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
     }
@@ -65,61 +66,71 @@ public class Pietons implements Runnable {
         return collided;
     }
 
-    // Çarpışma kontrolü
+    // collision control vehicule et pieton entre deux agent distance inf egal 20 pixel c-à-d accidant
+    //serdar
     private boolean detectCollision() {
         for (Vehicules vehicle : vehicles) {
             if (Math.abs(this.axeXP - vehicle.getAxeXV()) <= 20 && Math.abs(this.axeYP - vehicle.getAxeYV()) <= 20) {
                 collided = true;
-                panel.setCollisionOccurred(true, (int) this.axeXP, (int) this.axeYP); // Çarpışma pozisyonu
+                panel.setCollisionOccurred(true, (int) this.axeXP, (int) this.axeYP); // positon collision
                 return true;
             }
         }
         collided = false;
         return false;
     }
-
+    //serdar
     @Override
     public void run() {
         try {
-            // Yayaların 5 saniye aralıklarla çıkış yapması için bekleme süresi ekle
-            Thread.sleep(5000);
-            System.out.println("Pedestrian starting to move..."); // Test için başlangıç mesajı
+            //Ajouter un temps d'attente pour que les piétons sortent toutes les 5 secondes
+            Thread.sleep(0);
+            System.out.println("Pedestrian starting to move..."); // message start
 
             while (true) {
                 if (!panel.isCollisionActive()) {
-                    // Yaya geçidine yaklaşma kontrolü (7 numaralı ve 3 numaralı ışık noktaları)
-                    boolean isNearTrafficLight7 = Math.abs(axeXP - 300) <= 20 && Math.abs(axeYP - 600) <= 20; // 7 numaralı ışığın olduğu yer
-                    boolean isNearTrafficLight3 = Math.abs(axeXP - 420) <= 20 && Math.abs(axeYP - 240) <= 20; // 3 numaralı ışığın olduğu yer
+                    // Contrôle d'approche passage piéton (points feu 7 et 3)
+                    //boolean isNearTrafficLight7 = Math.abs(axeXP - 300) <= 20 && Math.abs(axeYP - 600) <= 20; // 7
+                    //boolean isNearTrafficLight3 = Math.abs(axeXP - 420) <= 20 && Math.abs(axeYP - 240) <= 20; // 3
+
+
+                    double distanceToTrafficLight7 = Math.sqrt(Math.pow(axeXP - 300, 2) + Math.pow(axeYP - 600, 2));
+                    boolean isNearTrafficLight7 = distanceToTrafficLight7 <= 30;
+
+                    double distanceToTrafficLight3 = Math.sqrt(Math.pow(axeXP - 420, 2) + Math.pow(axeYP - 240, 2));
+                    boolean isNearTrafficLight3 = distanceToTrafficLight3 <= 30;
+
+
 
                     if (isNearTrafficLight7 || isNearTrafficLight3) {
-                        // Trafik ışığı kontrolleri
+                        // feu cotrol
                         String trafficLightColor1 = trafficLight1.getCouleur();
                         String trafficLightColor2 = trafficLight2.getCouleur();
 
                         if (trafficLightColor1.equals("Vert") || trafficLightColor2.equals("Vert")) {
-                            // Trafik ışığı yeşilse yayalar durmalı
+                            // situation vert
                             enMovementP = false;
-                            System.out.println("Pedestrian stopped due to green light at a crosswalk.");
+                            System.out.println("Pieton arrete");
                         } else {
-                            // Trafik ışığı kırmızı veya sarıysa yayalar geçebilir
+                            //
                             enMovementP = true;
                             System.out.println("Pedestrian is moving due to red/yellow light at a crosswalk.");
                         }
                     } else {
-                        // Yaya geçidine yaklaşmamışsa normal ilerle
+                        // si les pieton proche de passage pieton, continue normal
                         enMovementP = true;
                     }
 
-                    // Hareket mantığı
+                    // logique movement
                     if (enMovementP) {
                         moveTowardsNextWaypoint();
                     }
 
-                    // Çarpışma kontrolü
+                    // collision detetec
                     if (detectCollision()) {
                         enMovementP = false;
                         System.out.println("Collision detected. Pedestrian is stopping.");
-                        Thread.sleep(3000); // Çarpışma sonrası bekleme süresi
+                        Thread.sleep(2); // apres acciden 2 ms
                     }
                 }
                 Thread.sleep(16); // 60 FPS
@@ -128,13 +139,13 @@ public class Pietons implements Runnable {
             e.printStackTrace();
         }
     }
-
+    //serdar
     private void moveTowardsNextWaypoint() {
         if (currentWaypointIndex < waypoints.length) {
             double nextX = waypoints[currentWaypointIndex][0];
             double nextY = waypoints[currentWaypointIndex][1];
 
-            // Bir sonraki waypoint'e ilerle
+            // marche marche prochaine point
             if (Math.abs(axeXP - nextX) < 1 && Math.abs(axeYP - nextY) < 1) {
                 currentWaypointIndex++;
             } else {
@@ -144,18 +155,18 @@ public class Pietons implements Runnable {
                 if (axeYP < nextY) axeYP += 1;
                 else if (axeYP > nextY) axeYP -= 1;
 
-                // Işığın üzerinde durmasını engellemek için ek kontrol
+                // rester loin feu
                 if (isNearTrafficLight(axeXP, axeYP)) {
                     System.out.println("Avoiding traffic light zone.");
                     currentWaypointIndex++;
                 }
             }
         } else {
-            // Hedefe ulaşıldığında başlangıç noktasına geri dön veya bekle
+            // apres arrive point d'arrive revient point depart
             currentWaypointIndex = 0;
         }
     }
-
+    //serdar
     private boolean isNearTrafficLight(double x, double y) {
         return (Math.abs(x - 300) <= 20 && Math.abs(y - 600) <= 20) || (Math.abs(x - 420) <= 20 && Math.abs(y - 240) <= 20);
     }
