@@ -95,10 +95,10 @@ public class Pietons implements Runnable {
 
 
                     double distanceToTrafficLight7 = Math.sqrt(Math.pow(axeXP - 300, 2) + Math.pow(axeYP - 600, 2));
-                    boolean isNearTrafficLight7 = distanceToTrafficLight7 <= 30;
+                    boolean isNearTrafficLight7 = distanceToTrafficLight7 <= 50;
 
                     double distanceToTrafficLight3 = Math.sqrt(Math.pow(axeXP - 420, 2) + Math.pow(axeYP - 240, 2));
-                    boolean isNearTrafficLight3 = distanceToTrafficLight3 <= 30;
+                    boolean isNearTrafficLight3 = distanceToTrafficLight3 <= 50;
 
 
 
