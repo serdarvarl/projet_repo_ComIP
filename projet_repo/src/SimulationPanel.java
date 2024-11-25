@@ -137,9 +137,9 @@ public class SimulationPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        //System.out.println("Painting component...");
+        //System.out.println("Pciziyorrrrrr");
 
-        //System.out.println("Painting component...");
+        //System.out.println("ciziyorrrrrr");
         //g.setColor(Color.RED);
         //g.drawString("Testing Paint", 50, 50);
 
@@ -180,8 +180,7 @@ public class SimulationPanel extends JPanel {
             drawCross(g, collisionX, collisionY);
         }
 
-
-        /*
+/*
         // Dessiner la grille de coordonnées
         g.setColor(Color.BLUE);
         for (int i = 0; i < getWidth(); i += 20) {
@@ -201,7 +200,7 @@ public class SimulationPanel extends JPanel {
         g.setColor(Color.GREEN);
         g.fillOval(getWidth() / 2, getHeight() / 2, 10, 10);
 
-         */
+*/
 
         // dessiner vehicules
         g.setColor(Color.BLUE);
@@ -222,8 +221,12 @@ public class SimulationPanel extends JPanel {
         g.drawString("Total accidents: " + collisionCounter, 10, 30);
 
 
-    /*
+
         //dessiner les point
+
+/*
+
+
         g.setColor(Color.RED);//
         g.fillOval(240, 460, 20, 20); //
         g.fillOval(320, 360, 20, 20); //
@@ -235,7 +238,8 @@ public class SimulationPanel extends JPanel {
         g.setColor(Color.BLUE);
         g.fillOval(620,60, 20, 20);
         g.fillOval(220,680, 20, 20);
-     */
+
+ */
 
     }
 

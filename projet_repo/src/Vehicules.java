@@ -49,7 +49,11 @@ public class Vehicules implements Runnable {
 
     // contrôle de la distance entre 2 véhicules
     //serdar
-    private boolean isTooCloseToVehicleAhead() {
+
+
+
+
+     private boolean isTooCloseToVehicleAhead() {
         for (Vehicules vehicle : vehicles) {
             if (vehicle != this && vehicle.getAxeXV() > this.axeXV && vehicle.getAxeXV() - this.axeXV < MIN_DISTANCE) {
                 return true;
@@ -58,8 +62,19 @@ public class Vehicules implements Runnable {
         return false;
     }
 
+
+
+
+
+
+
+
+
+
     // feu control methode
     //serdar
+
+
     public void verifierFeu() {
         double distanceToTrafficLight1 = Math.abs(axeXV - 370);  // 1er feu (420,240)
         double distanceToTrafficLight2 = Math.abs(axeXV - 350);  // 2ieme feu (300,600)
@@ -93,7 +108,9 @@ public class Vehicules implements Runnable {
             this.speed = 2.0;
         }
     }
-     //serdar
+
+
+    //serdar
     @Override
     public void run() {
         try {
@@ -108,6 +125,8 @@ public class Vehicules implements Runnable {
                             axeXV = MAX_X;  // Limite droite atteinte
                             directionX = 0; // Arrêter le mouvement horizontal
                             directionY = 1; // Commencer à se déplacer vers le bas
+
+                            //speed = 3.0;
                         }
                     } else if (directionX == -1) {
                         // Mouvement vers la gauche
@@ -116,6 +135,8 @@ public class Vehicules implements Runnable {
                             axeXV = MIN_X;  // Limite gauche atteinte
                             directionX = 0; // Arrêter le mouvement horizontal
                             directionY = -1; // Commencer à se déplacer vers le haut
+
+                            //speed = 3.0;
                         }
                     } else if (directionY == 1) {
                         // Mouvement vers le bas
@@ -124,6 +145,8 @@ public class Vehicules implements Runnable {
                             axeYV = MAX_Y;  // Limite inférieure atteinte
                             directionY = 0; // Arrêter le mouvement vertical
                             directionX = -1; // Commencer à se déplacer vers la gauche
+
+                            //speed = 3.0;
                         }
                     } else if (directionY == -1) {
                         // Mouvement vers le haut
@@ -132,6 +155,8 @@ public class Vehicules implements Runnable {
                             axeYV = MIN_Y;  // Limite supérieure atteinte
                             directionY = 0; // Arrêter le mouvement vertical
                             directionX = 1; // Commencer à se déplacer vers la droite
+
+                            //speed = 3.0;
                         }
                     }
 
