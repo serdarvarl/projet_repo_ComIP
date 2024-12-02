@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Pietons implements Runnable {
-    // Coordinates of the pedestrian
+    // Coordinate pieton
     private double axeXP;
     private double axeYP;
 
@@ -12,36 +12,36 @@ public class Pietons implements Runnable {
     private double targetX;
     private double targetY;
 
-    // Speed of the pedestrian
+    // pieton vites
     private double speed;
 
     // Movement status
     private boolean enMovementP;
 
-    // Traffic lights
+    // Feu tricoloeur
     private Feu trafficLight1;
     private Feu trafficLight2;
 
-    // Lists of pedestrians and vehicles
+    // Lists de pieton et vehicule
     private List<Pietons> pedestrians;
     private List<Vehicules> vehicles;
 
-    // Color of the pedestrian
+    // color pieton
     private Color color;
 
     // Collision status
     private boolean collided;
 
-    // Minimum distance for collision detection
+    // min distance pour collision
     private static final double MIN_DISTANCE = 20.0;
 
-    // Reference to the simulation panel for collision verification
+    //
     private SimulationPanel panel;
 
     // Lock object for sequential access
     private static final Object sequentialLock = new Object();
 
-    // Waypoints for the pedestrian's path
+    // les points drapeau
     private double[][] waypoints = {
             {240, 640}, {240, 460},
             {320, 360}, {460, 320},
@@ -49,10 +49,10 @@ public class Pietons implements Runnable {
             {520, 100}, {560, 80}
     };
 
-    // Index of the current waypoint
+    // index waypoints
     private int currentWaypointIndex = 0;
 
-    // Constructor to initialize the pedestrian
+    // constructor
     public Pietons(double axeXP, double axeYP, double targetX, double targetY, double speed, Feu trafficLight1, Feu trafficLight2, List<Vehicules> vehicles, List<Pietons> pedestrians, SimulationPanel panel) {
         this.axeXP = axeXP;
         this.axeYP = axeYP;
@@ -67,42 +67,43 @@ public class Pietons implements Runnable {
         this.enMovementP = false;
         this.collided = false;
 
-        // Assign a random color to the pedestrian
+        // random color pietons
         Random rand = new Random();
         this.color = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
     }
 
-    // Getter for the X coordinate
+
     public double getAxeXP() {
         return axeXP;
     }
 
-    // Getter for the Y coordinate
+
     public double getAxeYP() {
         return axeYP;
     }
 
-    // Getter for the color
+
     public Color getColor() {
         return color;
     }
 
-    // Getter for the collision status
+
     public boolean isCollided() {
         return collided;
     }
 
-    // Getter for the speed
+
     public double getSpeed() {
         return speed;
     }
 
-    // Setter for the speed
+
     public void setSpeed(double newSpeed) {
         this.speed = newSpeed;
     }
 
-    // Method to detect collision with vehicles
+    // collision control vehicule et pieton entre deux agent distance inf egal 20 pixel c-à-d accidant
+    //serdar
     private boolean detectCollision() {
         for (Vehicules vehicle : vehicles) {
             if (Math.abs(this.axeXP - vehicle.getAxeXV()) <= 20 && Math.abs(this.axeYP - vehicle.getAxeYV()) <= 20) {
@@ -114,17 +115,17 @@ public class Pietons implements Runnable {
         collided = false;
         return false;
     }
-
+    //Serdar
     @Override
     public void run() {
         try {
-            // Add a delay so that pedestrians start moving every 5 seconds
+            //Ajouter un temps d'attente pour que les piétons sortent toutes les 5 secondes
             Thread.sleep(0);
             System.out.println("Pedestrian starting to move..."); // Start message
 
             while (true) {
                 if (!panel.isCollisionActive()) {
-                    // Check proximity to traffic lights (points 7 and 3)
+                    //Contrôle d'approche passage piéton (points feu 7 et 3)
                     double distanceToTrafficLight7 = Math.sqrt(Math.pow(axeXP - 300, 2) + Math.pow(axeYP - 600, 2));
                     boolean isNearTrafficLight7 = distanceToTrafficLight7 <= 30;
 
@@ -132,21 +133,21 @@ public class Pietons implements Runnable {
                     boolean isNearTrafficLight3 = distanceToTrafficLight3 <= 30;
 
                     if (isNearTrafficLight7 || isNearTrafficLight3) {
-                        // Traffic light control
+                        //feu cotrol
                         String trafficLightColor1 = trafficLight1.getCouleur();
                         String trafficLightColor2 = trafficLight2.getCouleur();
 
                         if (trafficLightColor1.equals("Vert") || trafficLightColor2.equals("Vert")) {
-                            // Green light situation
+                            // situtaion vert
                             enMovementP = false;
                             System.out.println("Pieton arrete");
                         } else {
-                            // Red or yellow light situation
+                            //
                             enMovementP = true;
                             System.out.println("Pieton marche.");
                         }
                     } else {
-                        // Continue normally if not near a traffic light
+                        // si les pieton proche de passage pieton, continue normal
                         enMovementP = true;
                     }
 
@@ -155,7 +156,7 @@ public class Pietons implements Runnable {
                         moveTowardsNextWaypoint();
                     }
 
-                    // Collision detection
+                    // Collision detec
                     if (detectCollision()) {
                         enMovementP = false;
                         System.out.println("Collision detected.");
@@ -168,7 +169,7 @@ public class Pietons implements Runnable {
             e.printStackTrace();
         }
     }
-
+    //serdar
     // Method to move towards the next waypoint
     private void moveTowardsNextWaypoint() {
         if (currentWaypointIndex < waypoints.length) {
@@ -192,12 +193,12 @@ public class Pietons implements Runnable {
                 //}
             }
         } else {
-            // After reaching the destination, return to the starting point
+            // arrive target revien le depart
             currentWaypointIndex = 0;
         }
     }
     //serdar
-    // Method to check if the pedestrian is near a traffic light
+    // Method check pieton close to feu
     private boolean isNearTrafficLight(double x, double y) {
         return (Math.abs(x - 300) <= 30 && Math.abs(y - 620) <= 30) || (Math.abs(x - 260) <= 30 && Math.abs(y - 420) <= 30);
     }

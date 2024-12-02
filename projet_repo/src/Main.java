@@ -29,28 +29,28 @@ il y a 2 feux idendique mais intial color different avec 3 ms delay
  */
 
 public class Main {
-    // Main method to start the simulation application
+
     public static void main(String[] args) {
-        // Use SwingUtilities.invokeLater to ensure the GUI creation is done on the Event Dispatch Thread
+
         SwingUtilities.invokeLater(() -> {
-            // Create traffic lights with initial delays and colors
+            // creee feu
             Feu trafficLight1 = new Feu(0, "Rouge");
             Feu trafficLight2 = new Feu(3000, "Jaune");
 
-            // Create the main frame for the simulation
+            //cree frame
             JFrame frame = new JFrame("Simulation de trafic");
 
-            // Create the simulation panel and add it to the frame
+            // cree panel lancer toutss
             SimulationPanel simulationPanel = new SimulationPanel(trafficLight1, trafficLight2);
             frame.add(simulationPanel);
 
-            // Set the size of the frame
+            // dimnetion
             frame.setSize(942, 942);
 
-            // Set the default close operation to exit the application when the frame is closed
+            // si ferme fenetre
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            // Make the frame visible
+            //visible
             frame.setVisible(true);
         });
     }

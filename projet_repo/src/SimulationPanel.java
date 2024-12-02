@@ -12,31 +12,22 @@ import java.awt.Image;
 ////serdar
 
 public class SimulationPanel extends JPanel {
-    // Lists to hold vehicles and pedestrians in the simulation
+
     private List<Vehicules> vehicles;
     private List<Pietons> pedestrians;
-
-    // Traffic lights for the simulation
     private Feu trafficLight1;
     private Feu trafficLight2;
-
-    // Thread pool to manage concurrent tasks
     private ExecutorService executorService;
 
-    // Map representation of the simulation grid
     private Plan plan;
-
-    // Collision management variables
-    private boolean collisionOccurred = false;
+    private boolean collisionOccurred = false;// drapeau de situation d'accident
     private long collisionTime;
     private int collisionCounter = 0;
     private int collisionX = -1;
     private int collisionY = -1;
-
-    // Image to display at the collision site
     private Image crossImage = new ImageIcon("cross.png").getImage();
 
-    // Buttons to control the simulation
+    //button
     private JButton startButton;
     private JButton stopButton;
     private JButton resetButton;
@@ -51,16 +42,16 @@ public class SimulationPanel extends JPanel {
     private JButton increaseTrafficLight2SpeedButton;
     private JButton decreaseTrafficLight2SpeedButton;
 
-    // Flag to check if the simulation is running
+
     private boolean simulationRunning = false;
 
-    // Constructor for the simulation panel
+
     public SimulationPanel(Feu trafficLight1, Feu trafficLight2) {
         this.trafficLight1 = trafficLight1;
         this.trafficLight2 = trafficLight2;
 
         try {
-            // Load the simulation grid from a CSV file
+            // CSV plan
             plan = new Plan("plan1.csv");
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,17 +60,17 @@ public class SimulationPanel extends JPanel {
         vehicles = new ArrayList<>();
         pedestrians = new ArrayList<>();
 
-        // Initialize vehicles and their positions
+        // Ajouter vehucile
         for (int i = 0; i < 7; i++) {
             vehicles.add(new Vehicules(-100 * i, 180, trafficLight1, trafficLight2, vehicles));
         }
 
-        // Define waypoints for pedestrian paths
+        // way points
         int[][] waypoints = {
                 {240, 640}, {240, 460}, {320, 360}, {460, 320}, {480, 300}, {500, 100}, {580, 60}
         };
 
-        // Create pedestrians with staggered timers for arrival
+        // Ajouter pietons - chauque 3 seconde neww pieton
         for (int i = 0; i < 5; i++) {
             int finalI = i;
             Timer pedestrianTimer = new Timer(3000 * i, e -> {
@@ -96,7 +87,7 @@ public class SimulationPanel extends JPanel {
             pedestrianTimer.start();
         }
 
-        // Create a thread pool to manage tasks
+        // Start thread et simulation
         executorService = Executors.newCachedThreadPool();
 
         // Initialize control buttons
@@ -228,7 +219,7 @@ public class SimulationPanel extends JPanel {
             }
         });
 
-        // Arrange buttons in a panel with a GridLayout of 2 rows and 6 columns
+        // arrange buttin
         JPanel buttonPanel = new JPanel(new GridLayout(4, 6));
         buttonPanel.add(startButton);
         buttonPanel.add(stopButton);
@@ -247,12 +238,12 @@ public class SimulationPanel extends JPanel {
         buttonPanel.add(increaseTrafficLight2SpeedButton);
         buttonPanel.add(decreaseTrafficLight2SpeedButton);
 
-        // Add the button panel to the simulation panel
+        // ajouter sur le panel
         setLayout(new BorderLayout());
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    // Starts the simulation by submitting tasks to the thread pool
+    // Starter theread et simulation
     public void startSimulation() {
         executorService.submit(trafficLight1);
         executorService.submit(trafficLight2);
@@ -265,12 +256,12 @@ public class SimulationPanel extends JPanel {
             executorService.submit(pedestrian);
         }
 
-        // Schedule a repaint task to refresh the UI
+        //ui refrersh
         Timer repaintTimer = new Timer(16, e -> repaint());
         repaintTimer.start();
     }
 
-    // Stops the simulation by shutting down the thread pool
+    //stop
     private void stopSimulation() {
         executorService.shutdownNow();
     }
@@ -323,7 +314,7 @@ public class SimulationPanel extends JPanel {
 
 
 
-    // Increases pedestrian speed by 0.5 units
+    // agumenter lea vites 0.5 pieteon
     private void increasePedestrianSpeed() {
         for (Pietons pedestrian : pedestrians) {
             double newSpeed = pedestrian.getSpeed() + 0.5;
@@ -332,7 +323,7 @@ public class SimulationPanel extends JPanel {
         }
     }
 
-    // Decreases pedestrian speed by 0.5 units
+    // decreas 0.5 vites pieton
     private void decreasePedestrianSpeed() {
         for (Pietons pedestrian : pedestrians) {
             double newSpeed = pedestrian.getSpeed() - 0.5;
@@ -341,7 +332,7 @@ public class SimulationPanel extends JPanel {
         }
     }
 
-    // Increases vehicle speed by 0.5 units
+    // vehicul espreed  +0.5
     private void increaseVehicleSpeed() {
         for (Vehicules vehicle : vehicles) {
             double newSpeed = vehicle.getSpeed() + 0.5;
@@ -350,7 +341,7 @@ public class SimulationPanel extends JPanel {
         }
     }
 
-    // Decreases vehicle speed by 0.5 units
+    // vehicule -0.5
     private void decreaseVehicleSpeed() {
         for (Vehicules vehicle : vehicles) {
             double newSpeed = vehicle.getSpeed() - 0.5;
@@ -359,14 +350,14 @@ public class SimulationPanel extends JPanel {
         }
     }
 
-    // Changes the delay of a traffic light
+    // changes dure de feur
     private void changeTrafficLightSpeed(Feu trafficLight, int delayChange) {
         int newDelay = trafficLight.getDelay() + delayChange;
         trafficLight.setDelay(newDelay);
         System.out.println("Traffic light speed changed to: " + newDelay);
     }
 
-    // Sets a collision event with its coordinates
+    // Mettre à jour le statut de l'accident
     public void setCollisionOccurred(boolean collisionOccurred, int collisionX, int collisionY) {
         if (collisionOccurred && !this.collisionOccurred) {
             collisionCounter++;
@@ -380,17 +371,17 @@ public class SimulationPanel extends JPanel {
         this.collisionY = collisionY;
     }
 
-    // Getter for the collision X coordinate
+
     public int getCollisionX() {
         return collisionX;
     }
 
-    // Getter for the collision Y coordinate
+
     public int getCollisionY() {
         return collisionY;
     }
 
-    // Checks if a collision is currently active
+    // Vérifier si le statut de l'accident est actif
     public boolean isCollisionActive() {
         if (collisionOccurred && (System.currentTimeMillis() - collisionTime >= 2000)) {
             collisionOccurred = false;
@@ -402,7 +393,7 @@ public class SimulationPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Paint the grid from the plan
+        // dessiner le plan
         if (plan != null) {
             int[][] grid = plan.getGrid();
             for (int i = 0; i < grid.length; i++) {
@@ -431,31 +422,31 @@ public class SimulationPanel extends JPanel {
             }
         }
 
-        // Draw collision cross if a collision occurred
+        // dessiner collision cross if a collision occurred
         if (collisionOccurred && collisionX >= 0 && collisionY >= 0) {
             g.setColor(Color.RED);
             drawCross(g, collisionX, collisionY);
         }
 
-        // Draw vehicles
+        // desiiner vehicles
         g.setColor(Color.BLUE);
         for (Vehicules vehicle : vehicles) {
             g.fillRect((int) vehicle.getAxeXV(), (int) vehicle.getAxeYV(), 30, 30);
         }
 
-        // Draw pedestrians
+        // desiner pedestrians
         for (Pietons pedestrian : pedestrians) {
             g.setColor(pedestrian.getColor());
             g.fillOval((int) pedestrian.getAxeXP(), (int) pedestrian.getAxeYP(), 15, 15);
         }
 
-        // Draw total accidents count
+        // aficer numbre de accident
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Total accidents: " + collisionCounter, 10, 30);
     }
 
-    // Draws a cross at the collision site
+    // dessiner croxx
     private void drawCross(Graphics g, int collisionX, int collisionY) {
         int imageSize = 30;
         if (collisionOccurred && this.collisionX >= 0 && this.collisionY >= 0) {
