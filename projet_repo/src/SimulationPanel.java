@@ -26,7 +26,7 @@ public class SimulationPanel extends JPanel {
     private int collisionX = -1;
     private int collisionY = -1;
     private Image crossImage = new ImageIcon("cross.png").getImage();
-
+    //Lydia
     //button
     private JButton startButton;
     private JButton stopButton;
@@ -90,18 +90,19 @@ public class SimulationPanel extends JPanel {
         // Start thread et simulation
         executorService = Executors.newCachedThreadPool();
 
+        //Lydia
         // Initialize control buttons
         startButton = new JButton("Start");
         stopButton = new JButton("Stop");
         resetButton = new JButton("Reset");
-        increasePedestrianSpeedButton = new JButton("Increase Pedestrian Speed");
-        decreasePedestrianSpeedButton = new JButton("Decrease Pedestrian Speed");
-        increaseVehicleSpeedButton = new JButton("Vehicule v+");
-        decreaseVehicleSpeedButton = new JButton("Vehicule v-");
-        increaseTrafficLight1SpeedButton = new JButton("FEU 1 T+");
-        decreaseTrafficLight1SpeedButton = new JButton("FEU 1 T-");
-        increaseTrafficLight2SpeedButton = new JButton("FEU 2 T+");
-        decreaseTrafficLight2SpeedButton = new JButton("FEU 2 T+");
+        increasePedestrianSpeedButton = new JButton("Pieton v+=0.5");
+        decreasePedestrianSpeedButton = new JButton("Pieton v-=0.5");
+        increaseVehicleSpeedButton = new JButton("Vehicule v+=0.5");
+        decreaseVehicleSpeedButton = new JButton("Vehicule v-=0.5");
+        increaseTrafficLight1SpeedButton = new JButton("FEU 1 += 1 sc");
+        decreaseTrafficLight1SpeedButton = new JButton("FEU 1 =+ 1 sc");
+        increaseTrafficLight2SpeedButton = new JButton("FEU 2 += 1 sc");
+        decreaseTrafficLight2SpeedButton = new JButton("FEU 2 -= 1 sc");
 
         // Yaya sayısını artıran buton
         increasePedestrianCountButton = new JButton("Pieton +=1");
@@ -349,14 +350,14 @@ public class SimulationPanel extends JPanel {
             System.out.println("Vehicle speed decreased to: " + newSpeed);
         }
     }
-
+    //Serdar
     // changes dure de feur
     private void changeTrafficLightSpeed(Feu trafficLight, int delayChange) {
         int newDelay = trafficLight.getDelay() + delayChange;
         trafficLight.setDelay(newDelay);
         System.out.println("Traffic light speed changed to: " + newDelay);
     }
-
+    //Serdar
     // Mettre à jour le statut de l'accident
     public void setCollisionOccurred(boolean collisionOccurred, int collisionX, int collisionY) {
         if (collisionOccurred && !this.collisionOccurred) {
@@ -394,6 +395,7 @@ public class SimulationPanel extends JPanel {
         super.paintComponent(g);
 
         // dessiner le plan
+        //lydia + serdar
         if (plan != null) {
             int[][] grid = plan.getGrid();
             for (int i = 0; i < grid.length; i++) {
@@ -445,7 +447,7 @@ public class SimulationPanel extends JPanel {
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Total accidents: " + collisionCounter, 10, 30);
     }
-
+//serdar
     // dessiner croxx
     private void drawCross(Graphics g, int collisionX, int collisionY) {
         int imageSize = 30;

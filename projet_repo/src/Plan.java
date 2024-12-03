@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Plan {
     private int[][] grid;
-
+//lydia
     public Plan(String filePath) throws IOException {
         readCSV(filePath);
     }

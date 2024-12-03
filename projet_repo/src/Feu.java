@@ -6,7 +6,7 @@ public class Feu implements Runnable {
         this.delay = delay;
         this.couleur = initialColor;
     }
-
+    //hazem + serdar
     public String getCouleur() {
         return this.couleur;
     }

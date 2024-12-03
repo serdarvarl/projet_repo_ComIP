@@ -2,7 +2,7 @@ import static java.lang.Math.*;
 import java.awt.Color;
 import java.util.List;
 import java.util.Random;
-
+//hazem
 public class Pietons implements Runnable {
     // Coordinate pieton
     private double axeXP;
@@ -40,7 +40,7 @@ public class Pietons implements Runnable {
 
     // Lock object for sequential access
     private static final Object sequentialLock = new Object();
-
+    //serdar
     // les points drapeau
     private double[][] waypoints = {
             {240, 640}, {240, 460},
@@ -115,7 +115,7 @@ public class Pietons implements Runnable {
         collided = false;
         return false;
     }
-    //Serdar
+    //Serdar + hazem
     @Override
     public void run() {
         try {

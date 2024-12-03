@@ -1,6 +1,6 @@
 import static java.lang.Math.*;
 import java.util.List;
-
+//hazem
 public class Vehicules implements Runnable {
     private double axeXV; //
     private double axeYV; //
@@ -24,8 +24,8 @@ public class Vehicules implements Runnable {
         this.trafficLight1 = trafficLight1;
         this.trafficLight2 = trafficLight2;
         this.vehicles = vehicles;
-        this.enMovement = true; // The vehicle starts in motion
-        this.speed = 5.0; // Initial speed
+        this.enMovement = true; // commence movement
+        this.speed = 5.0; // Initial vites
     }
 
     //X
@@ -103,7 +103,8 @@ public class Vehicules implements Runnable {
             //this.speed = 2.0;
         }
     }
-
+    //serdar
+    // voiture movement chemin
     @Override
     public void run() {
         try {
@@ -155,7 +156,7 @@ public class Vehicules implements Runnable {
             System.out.println("Thread interrupted.");
         }
     }
-
+    //hazem
     // "notify" permet de relancer le mouvement
     public synchronized void reprendreMouvement() {
         enMovement = true;
